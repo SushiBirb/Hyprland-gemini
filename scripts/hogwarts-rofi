@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Hogwarts Theme Switcher for Illogical Impulse
+
+OPTIONS="🦁 Gryffindor Dark\n🦁 Gryffindor Light\n🐍 Slytherin Dark\n🐍 Slytherin Light\n🦅 Ravenclaw Dark\n🦅 Ravenclaw Light\n🦡 Hufflepuff Dark\n🦡 Hufflepuff Light"
+CHOICE=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Select Hogwarts Theme")
+
+case "$CHOICE" in
+    "🦁 Gryffindor Dark")
+        hogwarts-theme gryffindor-dark
+        ;;
+    "🦁 Gryffindor Light")
+        hogwarts-theme gryffindor-light
+        ;;
+    "🐍 Slytherin Dark")
+        hogwarts-theme slytherin-dark
+        ;;
+    "🐍 Slytherin Light")
+        hogwarts-theme slytherin-light
+        ;;
+    "🦅 Ravenclaw Dark")
+        hogwarts-theme ravenclaw-dark
+        ;;
+    "🦅 Ravenclaw Light")
+        hogwarts-theme ravenclaw-light
+        ;;
+    "🦡 Hufflepuff Dark")
+        hogwarts-theme hufflepuff-dark
+        ;;
+    "🦡 Hufflepuff Light")
+        hogwarts-theme hufflepuff-light
+        ;;
+esac

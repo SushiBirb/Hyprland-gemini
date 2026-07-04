@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# Hogwarts Theme Switcher for Illogical Impulse (end-4/dots-hyprland)
+
+if [[ -z "$1" ]]; then
+    echo "Usage: hogwarts-theme [theme-name]"
+    echo "Available themes: gryffindor-light, gryffindor-dark, slytherin-light, slytherin-dark, ravenclaw-light, ravenclaw-dark, hufflepuff-light, hufflepuff-dark"
+    exit 1
+fi
+
+THEME_NAME="$1"
+WALLPAPER_DIR="$HOME/hogwarts-rice/wallpapers"
+WALLPAPER_IMG="${WALLPAPER_DIR}/${THEME_NAME}.jpg"
+SWITCHWALL_SCRIPT="$HOME/.config/quickshell/ii/scripts/colors/switchwall.sh"
+
+export ILLOGICAL_IMPULSE_VIRTUAL_ENV="$HOME/.local/state/quickshell/.venv"
+
+if [[ ! -f "$WALLPAPER_IMG" ]]; then
+    echo "Error: Wallpaper $WALLPAPER_IMG not found."
+    exit 1
+fi
+
+case "$THEME_NAME" in
+    "gryffindor-dark")
+        HEX="#740001"
+        MODE="dark"
+        ;;
+    "gryffindor-light")
+        HEX="#AE0001"
+        MODE="light"
+        ;;
+    "slytherin-dark")
+        HEX="#1A472A"
+        MODE="dark"
+        ;;
+    "slytherin-light")
+        HEX="#2A623D"
+        MODE="light"
+        ;;
+    "ravenclaw-dark")
+        HEX="#0E1A40"
+        MODE="dark"
+        ;;
+    "ravenclaw-light")
+        HEX="#222F5B"
+        MODE="light"
+        ;;
+    "hufflepuff-dark")
+        HEX="#E09F00"
+        MODE="dark"
+        ;;
+    "hufflepuff-light")
+        HEX="#FFB800"
+        MODE="light"
+        ;;
+    *)
+        echo "Error: Unknown theme $THEME_NAME"
+        exit 1
+        ;;
+esac
+
+# Execute the Illogical Impulse switchwall script with the provided image and color
+"$SWITCHWALL_SCRIPT" --image "$WALLPAPER_IMG" --color "$HEX" --mode "$MODE"
+
+# Dynamically theme Zen Browser
+ZEN_CSS="
+:root {
+  --zen-primary-color: ${HEX} !important;
+  --toolbar-bgcolor: ${HEX} !important;
+  --tab-selected-bgcolor: ${HEX} !important;
+}
+"
+
+# Inject into both profiles
+echo "$ZEN_CSS" > ~/.config/zen/uc9x9hl5.Default\ \(release\)/chrome/userChrome.css
+echo "$ZEN_CSS" > ~/.config/zen/jkoyfvmj.Default\ Profile/chrome/userChrome.css
+
+# Notify completion
+notify-send "Hogwarts Theme" "Successfully applied ${THEME_NAME}."

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Hogwarts Settings Menu
+
+options="Toggle Animations & Blur\nSwitch Theme\nKeybindings Overview\nAdd Custom Keybind"
+
+chosen=$(echo -e "$options" | rofi -dmenu -i -p "Settings")
+
+case "$chosen" in
+    "Toggle Animations & Blur")
+        # Check current state
+        current_anim=$(hyprctl getoption animations:enabled -j | jq '.int')
+        if [[ "$current_anim" == "1" ]]; then
+            hyprctl keyword animations:enabled 0
+            hyprctl keyword decoration:blur:enabled 0
+            notify-send "Hogwarts Settings" "Animations & Blur Disabled"
+        else
+            hyprctl keyword animations:enabled 1
+            hyprctl keyword decoration:blur:enabled 1
+            notify-send "Hogwarts Settings" "Animations & Blur Enabled"
+        fi
+        ;;
+    "Switch Theme")
+        hogwarts-rofi
+        ;;
+    "Keybindings Overview")
+        # Display keybindings using rofi
+        keybinds=$(grep -E 'hl\.bind' ~/.config/hypr/hyprland/keybinds.lua | sed -e 's/hl.bind(//g' -e 's/)//g')
+        echo "$keybinds" | rofi -dmenu -i -p "Keybinds"
+        ;;
+    "Add Custom Keybind")
+        # Prompt for keybind and command
+        bind_keys=$(rofi -dmenu -p "Enter Keys (e.g., SUPER + K)")
+        if [[ -n "$bind_keys" ]]; then
+            bind_cmd=$(rofi -dmenu -p "Enter Command (e.g., kitty)")
+            if [[ -n "$bind_cmd" ]]; then
+                # Safe append logic (not using cat)
+                echo "hl.bind(\"$bind_keys\", hl.dsp.exec_cmd(\"$bind_cmd\"))" >> ~/.config/hypr/hyprland/keybinds.lua
+                hyprctl reload
+                notify-send "Hogwarts Settings" "Added custom keybind: $bind_keys"
+            fi
+        fi
+        ;;
+esac
